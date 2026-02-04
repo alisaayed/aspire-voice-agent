@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         {
           role: "system",
           content:
-            "Summarize the following transcription into a clear, concise email-ready summary. Keep it under 200 words. Always respond in English.",
+            "Summarize the following transcription into a clear, concise email-ready summary. Always respond in English. Format your response exactly as follows:\n\n• 3 to 5 bullet points summarizing the key points (each bullet starts with •)\n\nNext Step: [a single actionable next step based on the content]",
         },
         { role: "user", content: text },
       ],

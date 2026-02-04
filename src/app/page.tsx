@@ -20,6 +20,7 @@ export default function Home() {
   const [transcription, setTranscription] = useState("");
   const [summary, setSummary] = useState("");
   const [error, setError] = useState("");
+  const [isScheduled, setIsScheduled] = useState(false);
 
   const handleRecordingComplete = async (audioBlob: Blob) => {
     setError("");
@@ -61,7 +62,7 @@ export default function Home() {
     }
   };
 
-  const handleSendEmail = async (recipientEmail: string) => {
+  const handleSendEmail = async (recipientEmail: string, scheduledAt?: string) => {
     setError("");
     setState("sending");
 
@@ -69,7 +70,7 @@ export default function Home() {
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ summary, recipientEmail }),
+        body: JSON.stringify({ summary, recipientEmail, scheduledAt }),
       });
 
       if (!res.ok) {
@@ -77,6 +78,7 @@ export default function Home() {
       }
 
       setState("sent");
+      setIsScheduled(!!scheduledAt);
     } catch {
       setError("Failed to send email. Please try again.");
       setState("ready-to-send");
@@ -88,6 +90,7 @@ export default function Home() {
     setTranscription("");
     setSummary("");
     setError("");
+    setIsScheduled(false);
   };
 
   return (
@@ -128,7 +131,7 @@ export default function Home() {
           <>
             <StatusMessage
               type="success"
-              message="Email sent successfully!"
+              message={isScheduled ? "Email scheduled successfully!" : "Email sent successfully!"}
             />
             <button
               onClick={reset}
